@@ -72,6 +72,7 @@ bool MppDecoder::packet_Init(const AVPacket *av_packet)
     mpp_packet_set_pts(dec_packet, av_packet->pts); // 设置时间戳
     return true;
 }
+
 bool MppDecoder::Group_Init(const AVPacket *av_packet)
 {
     if (packet_Init(av_packet) == false)
@@ -90,11 +91,11 @@ bool MppDecoder::Group_Init(const AVPacket *av_packet)
         else // 否则为失败，将再一次尝试
         {
             std::cout << "[MPP Decode]" << "decode_put_packet failed: %d\n", ret;
-            return pkt_done;
         }
     }
     do
     {
+        pkt_done = false;
         mpp_frame_deinit(&dec_frame);
         ret = dec_mpi->decode_get_frame(dec_ctx, &dec_frame); // put_packet后就get_frame得出解码的数据
         if (MPP_ERR_TIMEOUT == ret)                           // 超时则等待一下
@@ -107,7 +108,6 @@ bool MppDecoder::Group_Init(const AVPacket *av_packet)
             av_log(NULL, AV_LOG_ERROR, "decode_get_frame failed: %d\n", ret);
             break;
         }
-
         if (dec_frame) // 判断得到的frame是否为空
         {
             if (mpp_frame_get_info_change(dec_frame)) // 检测frame的信息是否变化（分辨率，帧率等），
@@ -134,6 +134,7 @@ bool MppDecoder::Group_Init(const AVPacket *av_packet)
                     break;
                 }
                 dec_mpi->control(dec_ctx, MPP_DEC_SET_INFO_CHANGE_READY, NULL); // 表示准备好了可以开始解码
+                pkt_done = true;
             }
         }
         if (pkt_done == true)
@@ -143,6 +144,7 @@ bool MppDecoder::Group_Init(const AVPacket *av_packet)
               << "  ver_stride: " << ver_stride << std::endl;
     return pkt_done;
 }
+
 bool MppDecoder::Decode()
 {
     pkt_done = false; // 该变量用来表示packet是否被送入到mpp的解码器中
@@ -154,7 +156,7 @@ bool MppDecoder::Decode()
         else if (ret == MPP_ERR_BUFFER_FULL) // MPP_ERR_BUFFER_FULL表示mpp解码器已满，则需先get_frame
         {
             std::cout << "[MPP Decode]" << "Buffer full, waiting...\n";
-            pkt_done = 1;
+            pkt_done = true;
         }
         else // 否则为失败，将再一次尝试
         {
@@ -163,6 +165,7 @@ bool MppDecoder::Decode()
     }
     do
     {
+        pkt_done = false;
         mpp_frame_deinit(&dec_frame);
         ret = dec_mpi->decode_get_frame(dec_ctx, &dec_frame); // put_packet后就get_frame得出解码的数据
         if (MPP_ERR_TIMEOUT == ret)                           // 超时则等待一下
@@ -178,8 +181,37 @@ bool MppDecoder::Decode()
 
         if (dec_frame) // 判断得到的frame是否为空
         {
+            pkt_done = true;
         }
+        if (pkt_done == true)
+            break;
     } while (1);
 
     return pkt_done;
+}
+
+bool MppDecoder::Write_Packet(FILE *f)
+{
+    MppFrameFormat fmt = MPP_FMT_YUV420SP;
+    RK_U8 *base = NULL;
+    MppBuffer buffer = NULL;
+    fmt = mpp_frame_get_fmt(dec_frame);
+    buffer = mpp_frame_get_buffer(dec_frame);
+    if (NULL == buffer)
+        return false;
+    base = (RK_U8 *)mpp_buffer_get_ptr(buffer);
+
+    RK_U32 i;
+    RK_U8 *base_y = base;                       // 亮度分量从base开始
+    RK_U8 *base_c = base + hor_stride * ver_stride; // 颜色分量从base + h_stride * v_stride开始
+
+    for (i = 0; i < height; i++, base_y = base_y + hor_stride)
+    { // 写入亮度分量Y
+        fwrite(base_y, 1, width, f);
+    }
+    for (i = 0; i < height / 2; i++, base_c += hor_stride)
+    { // 写入颜色分量uv
+        fwrite(base_c, 1, width, f);
+    }
+    return true;
 }

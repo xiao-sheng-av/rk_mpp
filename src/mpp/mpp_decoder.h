@@ -46,6 +46,7 @@ public:
 	bool packet_Init(const AVPacket * av_packet);
 	bool Decode();
 	bool Group_Init(const AVPacket * av_packet);
+	bool Write_Packet(FILE * f);
 };
 
 #endif
