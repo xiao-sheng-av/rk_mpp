@@ -11,7 +11,8 @@ include_directories(/usr/include/rockchip)
 add_executable(decoder_demo 
                ./src/decoder_demo.cpp
                ./src/ffmpeg/ffmpeg_getframe.cpp
-               ./src/mpp/mpp_decoder.cpp)
+               ./src/mpp/mpp_decoder.cpp
+               ./src/mpp/mpp_encoder.cpp)
 
 #链接目标文件与其他库：
 target_link_libraries(decoder_demo

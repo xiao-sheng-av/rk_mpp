@@ -6,6 +6,7 @@ extern "C"{
 }
 #include <string>
 #define VideoDeviceNode "/dev/video0"
+
 class FFmpeg
 {
 private:
@@ -23,6 +24,9 @@ public:
     ~FFmpeg();
     bool Init();
     const AVPacket * getFrame();
+    int get_fps() const {return fps;}
+    int get_width() const {return width;}
+    int get_heigh() const {return height;}
 };
 
 

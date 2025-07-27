@@ -6,6 +6,17 @@ MppDecoder::~MppDecoder()
     if (dec_ctx)
     {
         mpp_destroy(dec_ctx);
+        dec_ctx = nullptr;
+    }
+    if (frm_grp)
+    {
+        mpp_buffer_group_put(frm_grp);
+        frm_grp = nullptr;
+    }
+    if (dec_frame)
+    {
+        mpp_frame_deinit(&dec_frame);
+        dec_frame = nullptr;
     }
 }
 

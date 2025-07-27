@@ -47,6 +47,8 @@ public:
 	bool Decode();
 	bool Group_Init(const AVPacket * av_packet);
 	bool Write_Packet(FILE * f);
+	RK_U32 get_hor() const {return hor_stride;}
+	RK_U32 get_ver() const {return ver_stride;}
 };
 
 #endif
