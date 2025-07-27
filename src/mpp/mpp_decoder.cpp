@@ -72,7 +72,7 @@ bool MppDecoder::Init()
     return true;
 }
 
-bool MppDecoder::packet_Init(const AVPacket *av_packet)
+bool MppDecoder::packet_Init(AVPacket *av_packet)
 {
     ret = mpp_packet_init(&dec_packet, av_packet->data, av_packet->size); // 将ffmpeg的packet变成mpp的pakect
     if (ret)
@@ -84,7 +84,7 @@ bool MppDecoder::packet_Init(const AVPacket *av_packet)
     return true;
 }
 
-bool MppDecoder::Group_Init(const AVPacket *av_packet)
+bool MppDecoder::Group_Init(AVPacket *av_packet)
 {
     if (packet_Init(av_packet) == false)
         return false;
@@ -197,11 +197,10 @@ bool MppDecoder::Decode()
         if (pkt_done == true)
             break;
     } while (1);
-
     return pkt_done;
 }
 
-bool MppDecoder::Write_Packet(FILE *f)
+bool MppDecoder::Write_File(FILE *f)
 {
     MppFrameFormat fmt = MPP_FMT_YUV420SP;
     RK_U8 *base = NULL;

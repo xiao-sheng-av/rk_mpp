@@ -62,7 +62,7 @@ bool FFmpeg::Init()
     return true;
 }
 
-const AVPacket *FFmpeg::getFrame()
+AVPacket *FFmpeg::getPacket()
 {
 	if (av_read_frame(inFmtCtx, av_packet) >= 0)
 	{

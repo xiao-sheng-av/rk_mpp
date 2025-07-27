@@ -11,13 +11,15 @@ include_directories(/usr/include/rockchip)
 add_executable(decoder_demo 
                ./src/decoder_demo.cpp
                ./src/ffmpeg/ffmpeg_getframe.cpp
+               ./src/mpp/mpp_decoder.cpp)
+
+add_executable(encoder_demo 
+               ./src/encoder_demo.cpp
+               ./src/ffmpeg/ffmpeg_getframe.cpp
                ./src/mpp/mpp_decoder.cpp
                ./src/mpp/mpp_encoder.cpp)
-
+#设置值
+set(COMMON_LIBS avcodec avformat avutil avdevice rockchip_mpp)
 #链接目标文件与其他库：
-target_link_libraries(decoder_demo
-                      avcodec 
-                      avformat 
-                      avutil 
-                      avdevice
-                      rockchip_mpp)
+target_link_libraries(encoder_demo ${COMMON_LIBS})
+target_link_libraries(decoder_demo ${COMMON_LIBS})

@@ -1,4 +1,6 @@
 #include "mpp_encoder.h"
+#include <iostream>
+#include <unistd.h>
 MppEncoder::MppEncoder(RK_U32 hor, RK_U32 ver,
                        RK_U32 w, RK_U32 h, int f, int g) : hor_stride(hor),
                                                            ver_stride(ver), width(w), height(h), fps(f), gop(g)
@@ -43,7 +45,7 @@ int MppEncoder::Init()
     {
         return ret;
     }
-    
+
     mpp_enc_cfg_set_s32(enc_cfg, "prep:width", width);                 // 设置编码宽度
     mpp_enc_cfg_set_s32(enc_cfg, "prep:height", height);               // 设置编码高度
     mpp_enc_cfg_set_s32(enc_cfg, "prep:hor_stride", hor_stride);       // 设置编码水平步幅
@@ -66,4 +68,36 @@ int MppEncoder::Init()
         return ret;
     }
     return 0;
+}
+
+bool MppEncoder::Encode(MppFrame frame)
+{
+    ret = enc_mpi->encode_put_frame(enc_ctx, frame);
+    if (ret)
+    {
+        std::cout << "encode_put_frame failed\n";
+        return false;
+    }
+
+    ret = enc_mpi->encode_get_packet(enc_ctx, &enc_packet); // 得到编码后的结果
+    if (ret)
+    {
+        std::cout << "encode_get_packet failed\n";
+        return false;
+    }
+    usleep(1000);
+    return true;
+}
+
+bool MppEncoder::Write_File(FILE * out_file)
+{
+    if (enc_packet)
+    {
+        void *ptr = mpp_packet_get_pos(enc_packet);
+        size_t len = mpp_packet_get_length(enc_packet);
+        fwrite(ptr, 1, len, out_file);
+        // 不可省略
+        mpp_packet_deinit(&enc_packet);
+        return true;
+    }else return false;
 }

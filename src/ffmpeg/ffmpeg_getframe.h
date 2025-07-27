@@ -23,7 +23,7 @@ public:
     FFmpeg(int w = 1920, int h = 1080, int f = 25) : width(w), height(h), fps(f){}
     ~FFmpeg();
     bool Init();
-    const AVPacket * getFrame();
+    AVPacket * getPacket();
     int get_fps() const {return fps;}
     int get_width() const {return width;}
     int get_heigh() const {return height;}

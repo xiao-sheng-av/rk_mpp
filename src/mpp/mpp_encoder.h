@@ -2,6 +2,7 @@
 #define MPP_ENCODER_H
 #include "rk_type.h"
 #include "rk_mpi.h"
+#include <cstdio> 
 class MppEncoder
 {
 private:
@@ -23,6 +24,8 @@ public:
 	~MppEncoder();
 	//返回0为正确
 	int Init();
+	bool Encode(MppFrame frame);
+	bool Write_File(FILE * out_file);
 };
 
 
