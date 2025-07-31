@@ -1,0 +1,4 @@
+echo 0x0100 > /sys/module/rk_vcodec/parameters/mpp_dev_debug
+dmesg -w
+
+mat创建空间（1920 * 1080）耗时0.2ms左右
