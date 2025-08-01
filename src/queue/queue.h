@@ -33,7 +33,7 @@ bool CircularQueue<T, QUEUE_SIZE>::queue_push(const T in)
 
 //出队
 template <class T, int QUEUE_SIZE>
-bool CircularQueue<T, QUEUE_SIZE>::queue_pop(T *out)
+bool CircularQueue<T, QUEUE_SIZE>::queue_pop(T * out)
 {
     if (head == tail)
         return false;
