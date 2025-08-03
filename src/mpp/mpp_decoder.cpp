@@ -116,7 +116,7 @@ bool MppDecoder::Group_Init(AVPacket *av_packet)
         }
         if (MPP_OK != ret) // 错误
         {
-            av_log(NULL, AV_LOG_ERROR, "decode_get_frame failed: %d\n", ret);
+            std::cout << "[MPP Decode]" << "decode_get_frame failedn";
             break;
         }
         if (dec_frame) // 判断得到的frame是否为空
@@ -132,7 +132,7 @@ bool MppDecoder::Group_Init(AVPacket *av_packet)
                 ret = mpp_buffer_group_get_internal(&frm_grp, MPP_BUFFER_TYPE_DRM); // 创建一个buffer池
                 if (ret)
                 {
-                    av_log(NULL, AV_LOG_ERROR, "mpp_buffer_group_get_internal failed: %d\n", ret);
+                    std::cout << "[MPP Decode]" << "mpp_buffer_group_get_internal failed\n";
                     pkt_done = false;
                     break;
                 }
@@ -140,7 +140,7 @@ bool MppDecoder::Group_Init(AVPacket *av_packet)
                 ret = mpp_buffer_group_limit_config(frm_grp, buf_size, 60);    // 此函数用来限制buffer的数量
                 if (ret)
                 {
-                    av_log(NULL, AV_LOG_ERROR, "mpp_buffer_group_limit_config failed: %d\n", ret);
+                    std::cout << "[MPP Decode]" << "mpp_buffer_group_limit_config failed\n";
                     pkt_done = false;
                     break;
                 }
@@ -171,13 +171,12 @@ bool MppDecoder::Decode()
         }
         else // 否则为失败，将再一次尝试
         {
-            std::cout << "[MPP Decode]" << "decode_put_packet failed: %d\n", ret;
+            std::cout << "[MPP Decode]" << "decode_put_packet failed\n";
         }
     }
     do
     {
         pkt_done = false;
-        mpp_frame_deinit(&dec_frame);
         ret = dec_mpi->decode_get_frame(dec_ctx, &dec_frame); // put_packet后就get_frame得出解码的数据
         if (MPP_ERR_TIMEOUT == ret)                           // 超时则等待一下
         {
@@ -186,7 +185,7 @@ bool MppDecoder::Decode()
         }
         if (MPP_OK != ret) // 错误
         {
-            av_log(NULL, AV_LOG_ERROR, "decode_get_frame failed: %d\n", ret);
+            std::cout << "[MPP Decode]" << "decode_get_frame failed";
             break;
         }
 
