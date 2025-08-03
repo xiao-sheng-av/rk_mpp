@@ -46,7 +46,9 @@ int main(int argc, char **argv)
         Mpp_D.Decode();
         if (Frame_queue.queue_push(Mpp_D.dec_frame) == false)
         {
-            //mpp_frame_deinit(&Mpp_D.dec_frame);
+            Frame_queue.queue_pop(&temp); // 队列满则出队
+            mpp_frame_deinit(&temp);      // 释放旧帧资源
+            Frame_queue.queue_push(Mpp_D.dec_frame); // 重新尝试入队
         }
         Mpp_D.dec_frame = nullptr;
     }
