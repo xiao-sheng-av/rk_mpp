@@ -34,7 +34,7 @@ find_package(OpenMP REQUIRED)
 #链接目标文件与其他库：
 # target_link_libraries(encoder_demo ${COMMON_LIBS} )
 # target_link_libraries(decoder_demo ${COMMON_LIBS} )
-target_link_libraries(test ${COMMON_LIBS} ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
+target_link_libraries(test ${COMMON_LIBS} ${OpenCV_LIBS} OpenMP::OpenMP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/libFallDetector.so)
 
 # 为 test 添加 -O3 优化
 target_compile_options(test PRIVATE -O3)
