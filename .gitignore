@@ -1,2 +1,6 @@
 build/
 指令.txt
+decoder
+decoder.cpp
+libFallDetector.so
+xx.cpp
