@@ -49,6 +49,7 @@ public:
 	bool Write_File(FILE * f);
 	RK_U32 get_hor() const {return hor_stride;}
 	RK_U32 get_ver() const {return ver_stride;}
+	void Frmae_Deinit();
 };
 
 #endif
