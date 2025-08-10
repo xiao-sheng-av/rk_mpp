@@ -10,6 +10,7 @@ FFmpeg::~FFmpeg()
 
 bool FFmpeg::Init()
 {
+#if 1
     std::string temp;
     // 查询并返回解复用器
     inFmt = av_find_input_format("v4l2"); 
@@ -18,7 +19,6 @@ bool FFmpeg::Init()
 		av_log(NULL, AV_LOG_ERROR, "find_input_v4l2 fial");
 		return false;
 	}
-
 	options = NULL;
     // 设置输入格式
 	av_dict_set(&options, "input_format", format.c_str(), 0);
@@ -59,6 +59,10 @@ bool FFmpeg::Init()
 		av_log(NULL, AV_LOG_ERROR, "av_packet_alloc fail\n");
         return false;
 	}
+#else 0
+
+
+#endif
     return true;
 }
 

@@ -27,6 +27,7 @@ public:
     int get_fps() const {return fps;}
     int get_width() const {return width;}
     int get_heigh() const {return height;}
+    void packet_deinit() { if (av_packet != nullptr) av_packet_unref(av_packet); }
 };
 
 
