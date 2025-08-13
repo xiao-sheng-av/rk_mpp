@@ -1,7 +1,8 @@
 echo 0x0100 > /sys/module/rk_vcodec/parameters/mpp_dev_debug
 dmesg -w
 
-mat创建空间（1920 * 1080）耗时0.2ms左右
-VIBE中的run的rng修改在for下面，vibe算法减少至11ms，但是不知道vibe算法还有没有效果
 
 debug  set confirm off
+
+pidof 名称
+cat /proc/pid/status | grep Vm
