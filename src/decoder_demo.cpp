@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./ffmpeg/ffmpeg_getframe.h"
 #include "./mpp/mpp_decoder.h"
+#include <unistd.h>
 bool Init(FFmpeg &f, MppDecoder &m);
 int main(int argc, char **argv)
 {
@@ -20,9 +21,25 @@ int main(int argc, char **argv)
 
     while (1)
     {
-        Mpp_D.packet_Init(f.getPacket());
-        Mpp_D.Decode();
-        Mpp_D.Write_File(out_file);
+        if (Mpp_D.packet_Init(f.getPacket()) == false)
+        {
+            usleep(1000);
+            goto deinit;
+        }
+        if (Mpp_D.Decode() == false)
+        {
+            std::cout << "[Total] Decode false!\n";
+            goto deinit;
+            
+        }
+        // if (Mpp_D.Write_File(out_file) == false)
+        // {
+        //     std::cout << "[Total] Write File false!\n";
+        //     goto deinit;
+        // }
+deinit:
+        f.packet_deinit();
+        Mpp_D.Frame_Deinit();
     }
     exit(EXIT_SUCCESS);
 }
