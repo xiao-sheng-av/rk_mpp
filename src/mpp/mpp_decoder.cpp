@@ -258,7 +258,7 @@ bool MppDecoder::Write_File(FILE *f)
     return true;
 }
 
-void MppDecoder::Frmae_Deinit()
+void MppDecoder::Frame_Deinit()
 {
     mpp_frame_deinit(&dec_frame);
     dec_frame = nullptr;
