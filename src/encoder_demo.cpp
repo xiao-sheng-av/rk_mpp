@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
     MppEncoder Mpp_E(Mpp_D.get_hor(), Mpp_D.get_ver(), f.get_width(), f.get_heigh(), f.get_fps(), f.get_fps());
     if (Mpp_E.Init() == 0)
-        std::cout << "Mpp_Encoder success\n";
+        std::cout << "Mpp_Encoder Init Success\n";
 
     while (1)
     {
