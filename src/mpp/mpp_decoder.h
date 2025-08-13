@@ -43,12 +43,14 @@ public:
 	MppDecoder(int w = 1920, int h = 1080) : width(w), height(h) {};
 	~MppDecoder();
 	bool Init();
+	bool Group_Init(AVPacket * av_packet);
 	bool packet_Init(AVPacket * av_packet);
 	bool Decode();
-	bool Group_Init(AVPacket * av_packet);
 	bool Write_File(FILE * f);
 	RK_U32 get_hor() const {return hor_stride;}
 	RK_U32 get_ver() const {return ver_stride;}
+	RK_U32 get_width() const {return width;}
+	RK_U32 get_height() const {return height;}
 	void Frame_Deinit();
 };
 
