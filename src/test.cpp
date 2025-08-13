@@ -18,7 +18,7 @@ bool Init(FFmpeg &f, MppDecoder &m)
     return true;
 }
 
-
+uint32_t full = 0;
 int main(int argc, char **argv)
 {
     if (argc < 2)
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         std::cout << "[Total] Init false!\n";
         exit(EXIT_FAILURE);
     }
-    std::thread v(vibe, std::ref(f), std::ref(Frame_queue), std::ref(Mat_queue));
+    std::thread v(vibe, std::ref(Mpp_D), std::ref(Frame_queue), std::ref(Mat_queue));
     std::thread l(liu, std::ref(Mat_queue));
     MppFrame temp;
     while (1)
@@ -50,14 +50,16 @@ int main(int argc, char **argv)
         }
         if (Mpp_D.Decode() == false)
         {
-            Mpp_D.Frmae_Deinit();
+            Mpp_D.Frame_Deinit();
             f.packet_deinit();
             std::cout << "[Total] Decode false!\n";
-            break;
+            continue;
         }
         if (Frame_queue.queue_push(Mpp_D.dec_frame) == false)
         {
-            Mpp_D.Frmae_Deinit();
+            Mpp_D.Frame_Deinit();
+            f.packet_deinit();
+            std::cout << full++ << std::endl;
             continue;
         }
         //需要av_packet_unref释放，否则会泄漏内存
